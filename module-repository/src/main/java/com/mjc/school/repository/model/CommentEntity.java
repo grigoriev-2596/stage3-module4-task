@@ -1,6 +1,5 @@
 package com.mjc.school.repository.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,17 +21,14 @@ public class CommentEntity implements BaseEntity<Long> {
     @Column
     private String content;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "news_id")
     private NewsEntity news;
 
-    @JsonIgnore
     @Column(name = "creation_date")
     @CreatedDate
     private LocalDateTime creationDate;
 
-    @JsonIgnore
     @Column(name = "last_update_date")
     @LastModifiedDate
     private LocalDateTime lastUpdateDate;

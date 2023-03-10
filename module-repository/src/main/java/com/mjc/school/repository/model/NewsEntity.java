@@ -1,6 +1,5 @@
 package com.mjc.school.repository.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -27,12 +26,10 @@ public class NewsEntity implements BaseEntity<Long> {
     @Column
     private String content;
 
-    @JsonIgnore
     @Column(name = "creation_date", updatable = false)
     @CreatedDate
     private LocalDateTime creationDate;
 
-    @JsonIgnore
     @Column(name = "last_update_date")
     @LastModifiedDate
     private LocalDateTime lastUpdateDate;
@@ -48,7 +45,6 @@ public class NewsEntity implements BaseEntity<Long> {
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private List<TagEntity> tags = new ArrayList<>();
 
-    @JsonIgnore
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "news", fetch = FetchType.LAZY)
     private List<CommentEntity> comments = new ArrayList<>();
 

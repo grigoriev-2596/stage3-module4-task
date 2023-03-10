@@ -1,6 +1,5 @@
 package com.mjc.school.repository.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.Objects;
 @Table(name = "tags")
 public class TagEntity implements BaseEntity<Long> {
 
-    @JsonIgnore
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     List<NewsEntity> news = new ArrayList<>();
     @Id
