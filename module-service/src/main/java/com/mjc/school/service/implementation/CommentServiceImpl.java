@@ -89,7 +89,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<CommentDtoResponse> getComments(CommentSearchCriteriaParams params, Pageable pageable) {
+    public Page<CommentDtoResponse> getComments(Pageable pageable, CommentSearchCriteriaParams params) {
         CommentSearchParams searchParams = new CommentSearchParams(params.content(), params.newsId());
 
         Page<CommentEntity> commentEntityPage = commentRepository.getComments(searchParams, pageable);

@@ -88,7 +88,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<AuthorDtoResponse> getAuthors(AuthorSearchCriteriaParams params, Pageable pageable) {
+    public Page<AuthorDtoResponse> getAuthors(Pageable pageable, AuthorSearchCriteriaParams params) {
         AuthorSearchParams searchParams = new AuthorSearchParams(params.name(), params.newsId());
 
         Page<AuthorEntity> filteredAuthors = authorRepository.getAuthors(searchParams, pageable);

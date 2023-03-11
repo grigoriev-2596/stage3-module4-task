@@ -23,19 +23,19 @@ public class TagRepositoryImpl extends AbstractRepository<TagEntity, Long> imple
 
     @Override
     public Page<TagEntity> getTags(TagSearchParams params, Pageable pageable) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<TagEntity> criteriaQuery = criteriaBuilder.createQuery(TagEntity.class);
-        Root<TagEntity> root = criteriaQuery.from(TagEntity.class);
-        Join<TagEntity, NewsEntity> newsJoin = root.join("news");
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<TagEntity> query = builder.createQuery(TagEntity.class);
+        Root<TagEntity> root = query.from(TagEntity.class);
 
         if (params.name() != null) {
-            criteriaQuery.where(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + params.name() + "%"));
+            query.where(builder.like(builder.lower(root.get("name")), "%" + params.name() + "%"));
         }
         if (params.newsId() != null) {
-            criteriaQuery.where(criteriaBuilder.equal(newsJoin.get("id"), params.newsId()));
+            Join<TagEntity, NewsEntity> newsJoin = root.join("news");
+            query.where(builder.equal(newsJoin.get("id"), params.newsId()));
         }
-        criteriaQuery.distinct(true);
+        query.distinct(true);
 
-        return getFilteredEntity(criteriaBuilder, criteriaQuery, root, pageable);
+        return getFilteredEntity(builder, query, root, pageable);
     }
 }

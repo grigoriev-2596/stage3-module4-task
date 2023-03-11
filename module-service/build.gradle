@@ -13,9 +13,6 @@ dependencies {
     implementation 'org.springframework:spring-context'
     implementation "org.mapstruct:mapstruct:$mapStructVersion"
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiterVersion"
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiterVersion"
-    testImplementation "com.tngtech.archunit:archunit-junit5:$archUnitVersion"
     implementation "com.github.java-json-tools:json-patch:$jsonPatchVersion"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version"
 

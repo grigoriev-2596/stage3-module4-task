@@ -23,19 +23,18 @@ public class AuthorRepositoryImpl extends AbstractRepository<AuthorEntity, Long>
 
     @Override
     public Page<AuthorEntity> getAuthors(AuthorSearchParams params, Pageable pageable) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<AuthorEntity> criteriaQuery = criteriaBuilder.createQuery(AuthorEntity.class);
-        Root<AuthorEntity> root = criteriaQuery.from(AuthorEntity.class);
-        Join<AuthorEntity, NewsEntity> newsJoin = root.join("news");
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<AuthorEntity> query = builder.createQuery(AuthorEntity.class);
+        Root<AuthorEntity> root = query.from(AuthorEntity.class);
 
         if (params.name() != null) {
-            criteriaQuery.where(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), "%" + params.name() + "%"));
+            query.where(builder.like(builder.lower(root.get("name")), "%" + params.name() + "%"));
         }
         if (params.newsId() != null) {
-            criteriaQuery.where(criteriaBuilder.equal(newsJoin.get("id"), params.newsId()));
+            Join<AuthorEntity, NewsEntity> newsJoin = root.join("news");
+            query.where(builder.equal(newsJoin.get("id"), params.newsId()));
         }
-        criteriaQuery.distinct(true);
 
-        return getFilteredEntity(criteriaBuilder, criteriaQuery, root, pageable);
+        return getFilteredEntity(builder, query, root, pageable);
     }
 }

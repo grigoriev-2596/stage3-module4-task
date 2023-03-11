@@ -88,7 +88,7 @@ public class TagServiceImpl implements TagService {
 
     @Transactional(readOnly = true)
     @Override
-    public Page<TagDtoResponse> getTags(TagSearchCriteriaParams params, Pageable pageable) {
+    public Page<TagDtoResponse> getTags(Pageable pageable, TagSearchCriteriaParams params) {
         TagSearchParams searchParams = new TagSearchParams(params.name(), params.newsId());
 
         Page<TagEntity> tagEntityPage = tagRepository.getTags(searchParams, pageable);

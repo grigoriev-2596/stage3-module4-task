@@ -70,12 +70,10 @@ public abstract class AbstractRepository<T extends BaseEntity<K>, K> implements 
 
     protected Page<T> getFilteredEntity(final CriteriaBuilder criteriaBuilder, final CriteriaQuery<T> criteriaQuery,
                                         final Root<T> root, Pageable pageable) {
+
         criteriaQuery.select(root);
-        if (criteriaQuery.getRestriction() != null) {
-            criteriaQuery.where(criteriaQuery.getRestriction());
-        }
         criteriaQuery.orderBy(QueryUtils.toOrders(pageable.getSort(), root, criteriaBuilder));
-        criteriaQuery.distinct(criteriaQuery.isDistinct());
+        criteriaQuery.distinct(true);
 
         List<T> pageEntities = entityManager.createQuery(criteriaQuery)
                 .setFirstResult((int) pageable.getOffset())
@@ -88,28 +86,28 @@ public abstract class AbstractRepository<T extends BaseEntity<K>, K> implements 
     }
 
 
-    protected long count(final CriteriaBuilder cb, final CriteriaQuery<T> selectQuery,
+    protected long count(final CriteriaBuilder builder, final CriteriaQuery<T> selectQuery,
                          Root<T> root) {
-        CriteriaQuery<Long> query = createCountQuery(cb, selectQuery, root);
+        CriteriaQuery<Long> query = createCountQuery(builder, selectQuery, root);
         return this.entityManager.createQuery(query).getSingleResult();
     }
 
-    private CriteriaQuery<Long> createCountQuery(final CriteriaBuilder cb,
-                                                 final CriteriaQuery<T> criteria, final Root<T> root) {
+    private CriteriaQuery<Long> createCountQuery(final CriteriaBuilder criteriaBuilder,
+                                                 final CriteriaQuery<T> criteriaQuery, final Root<T> root) {
 
-        final CriteriaQuery<Long> countQuery = cb.createQuery(Long.class);
-        final Root<T> countRoot = countQuery.from(criteria.getResultType());
+        final CriteriaQuery<Long> countQuery = criteriaBuilder.createQuery(Long.class);
+        final Root<T> countRoot = countQuery.from(entityClass);
 
         doJoins(root.getJoins(), countRoot);
         doJoinsOnFetches(root.getFetches(), countRoot);
 
-        countQuery.select(cb.count(countRoot));
-        if (criteria.getRestriction() != null) {
-            countQuery.where(criteria.getRestriction());
+        countQuery.select(criteriaBuilder.count(countRoot));
+        if (criteriaQuery.getRestriction() != null) {
+            countQuery.where(criteriaQuery.getRestriction());
         }
         countRoot.alias(root.getAlias());
 
-        return countQuery.distinct(criteria.isDistinct());
+        return countQuery.distinct(true);
     }
 
     @SuppressWarnings("unchecked")

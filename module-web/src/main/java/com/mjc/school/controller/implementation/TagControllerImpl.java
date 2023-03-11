@@ -27,7 +27,7 @@ public class TagControllerImpl implements TagController {
     @Override
     public List<TagDtoResponse> getTags(Pageable pageable, String name, Long newsId) {
         TagSearchCriteriaParams params = new TagSearchCriteriaParams(name, newsId);
-        return tagService.getTags(params, pageable).getContent();
+        return tagService.getTags(pageable, params).getContent();
     }
 
     @Override

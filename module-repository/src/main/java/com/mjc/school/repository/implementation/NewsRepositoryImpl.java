@@ -27,38 +27,32 @@ public class NewsRepositoryImpl extends AbstractRepository<NewsEntity, Long> imp
 
     @Override
     public Page<NewsEntity> getNews(NewsSearchParams params, Pageable pageable) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<NewsEntity> criteriaQuery = criteriaBuilder.createQuery(NewsEntity.class);
-        Root<NewsEntity> root = criteriaQuery.from(NewsEntity.class);
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<NewsEntity> query = builder.createQuery(NewsEntity.class);
+        Root<NewsEntity> root = query.from(NewsEntity.class);
 
-        Join<NewsEntity, TagEntity> tagJoin = root.join("tags");
-        Join<NewsEntity, AuthorEntity> authorJoin = root.join("author");
-
-        if (params.tagIds() != null) {
-            criteriaQuery.where(tagJoin.get("id").in(params.tagIds()));
+        if (params.tagIds() != null || params.tagNames() != null) {
+            Join<NewsEntity, TagEntity> tagJoin = root.join("tags");
+            if (params.tagIds() != null) {
+                query.where(tagJoin.get("id").in(params.tagIds()));
+            }
+            if (params.tagNames() != null) {
+                query.where(tagJoin.get("name").in(params.tagNames()));
+            }
         }
 
-        if (params.tagNames() != null) {
-            criteriaQuery.where(tagJoin.get("name").in(params.tagNames()));
-        }
         if (params.authorName() != null) {
-            criteriaQuery.where(
-                    criteriaBuilder
-                            .like(criteriaBuilder.lower(authorJoin.get("name")), "%" + params.authorName() + "%"));
+            Join<NewsEntity, AuthorEntity> authorJoin = root.join("author");
+            query.where(builder.like(builder.lower(authorJoin.get("name")), "%" + params.authorName() + "%"));
         }
         if (params.title() != null) {
-            criteriaQuery.where(
-                    criteriaBuilder
-                            .like(criteriaBuilder.lower(root.get("title")), "%" + params.title() + "%"));
+            query.where(builder.like(builder.lower(root.get("title")), "%" + params.title() + "%"));
         }
         if (params.content() != null) {
-            criteriaQuery.where(
-                    criteriaBuilder
-                            .like(criteriaBuilder.lower(root.get("content")), "%" + params.content() + "%"));
+            query.where(builder.like(builder.lower(root.get("content")), "%" + params.content() + "%"));
         }
-        criteriaQuery.distinct(true);
 
-        return getFilteredEntity(criteriaBuilder, criteriaQuery, root, pageable);
+        return getFilteredEntity(builder, query, root, pageable);
     }
 
 }

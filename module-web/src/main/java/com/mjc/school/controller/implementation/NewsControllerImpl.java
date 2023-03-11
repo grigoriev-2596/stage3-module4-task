@@ -19,7 +19,6 @@ public class NewsControllerImpl implements NewsController {
 
     private final NewsService newsService;
 
-
     @Autowired
     public NewsControllerImpl(NewsService newsService) {
         this.newsService = newsService;

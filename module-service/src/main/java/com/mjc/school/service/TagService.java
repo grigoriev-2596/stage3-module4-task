@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface TagService extends BaseService<TagDtoRequest, TagDtoResponse, Long> {
 
-    Page<TagDtoResponse> getTags(TagSearchCriteriaParams params, Pageable pageable);
+    Page<TagDtoResponse> getTags(Pageable pageable, TagSearchCriteriaParams params);
 
     TagDtoResponse patch(Long id, JsonPatch patch);
 }

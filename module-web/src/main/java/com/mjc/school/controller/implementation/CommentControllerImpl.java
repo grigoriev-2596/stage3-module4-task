@@ -28,7 +28,7 @@ public class CommentControllerImpl implements CommentController {
     @Override
     public List<CommentDtoResponse> getComments(Pageable pageable, String content, Long newsId) {
         CommentSearchCriteriaParams params = new CommentSearchCriteriaParams(content, newsId);
-        return commentService.getComments(params, pageable).getContent();
+        return commentService.getComments(pageable, params).getContent();
     }
 
     @Override

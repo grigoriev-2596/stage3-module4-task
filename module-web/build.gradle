@@ -6,10 +6,13 @@ plugins {
 
 dependencies {
     implementation project(':module-service')
+
     implementation 'org.springframework:spring-context'
     implementation 'org.springframework.hateoas:spring-hateoas'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web:'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation "com.github.java-json-tools:json-patch:$jsonPatchVersion"
+
+    testImplementation "io.rest-assured:spring-mock-mvc:$restAssuredMockMvcVersion"
 }

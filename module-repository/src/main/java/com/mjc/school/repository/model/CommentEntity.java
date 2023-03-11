@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "comment")
+@Table(name = "comments")
 @EntityListeners(AuditingEntityListener.class)
 public class CommentEntity implements BaseEntity<Long> {
 

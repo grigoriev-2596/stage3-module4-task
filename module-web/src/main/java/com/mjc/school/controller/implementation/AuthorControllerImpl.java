@@ -1,7 +1,5 @@
 package com.mjc.school.controller.implementation;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.mjc.school.controller.AuthorController;
 import com.mjc.school.service.AuthorService;
@@ -21,10 +19,6 @@ public class AuthorControllerImpl implements AuthorController {
 
     private final AuthorService authorService;
 
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .findAndRegisterModules();
-
     @Autowired
     public AuthorControllerImpl(AuthorService authorService) {
         this.authorService = authorService;
@@ -33,7 +27,7 @@ public class AuthorControllerImpl implements AuthorController {
     @Override
     public List<AuthorDtoResponse> getAuthors(Pageable pageable, String name, Long newsId) {
         AuthorSearchCriteriaParams params = new AuthorSearchCriteriaParams(name, newsId);
-        return authorService.getAuthors(params, pageable).getContent();
+        return authorService.getAuthors(pageable, params).getContent();
     }
 
     @Override

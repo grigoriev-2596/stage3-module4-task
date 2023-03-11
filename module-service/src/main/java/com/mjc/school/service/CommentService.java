@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface CommentService extends BaseService<CommentDtoRequest, CommentDtoResponse, Long> {
 
-    Page<CommentDtoResponse> getComments(CommentSearchCriteriaParams params, Pageable pageable);
+    Page<CommentDtoResponse> getComments(Pageable pageable, CommentSearchCriteriaParams params);
 
     CommentDtoResponse patch(Long id, JsonPatch patch);
 

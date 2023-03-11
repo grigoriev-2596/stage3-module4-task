@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,9 +18,11 @@ import java.util.List;
 
 @Validated
 public interface NewsController {
+
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     List<NewsDtoResponse> getNews(
-            @PageableDefault(size = 2, page = 0)
+            @PageableDefault(size = 2)
             @SortDefault(sort = "title", direction = Sort.Direction.ASC)
             Pageable pageable,
 
@@ -37,18 +40,23 @@ public interface NewsController {
             @RequestParam(required = false)
             List<Long> tagIds);
 
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id:\\d+}")
     NewsDtoResponse getById(@Min(1) @PathVariable Long id);
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     NewsDtoResponse create(@Valid @RequestBody NewsDtoRequest createRequest);
 
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/{id:\\d+}")
     NewsDtoResponse update(@Min(1) @PathVariable Long id, @Valid @RequestBody NewsDtoRequest updateRequest);
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{id:\\d+}")
     Boolean deleteById(@Min(1) @PathVariable Long id);
 
+    @ResponseStatus(HttpStatus.OK)
     @PatchMapping(value = "/{id:\\d+}", consumes = "application/json-patch+json")
     NewsDtoResponse patch(@Min(1) @PathVariable Long id, @RequestBody JsonPatch patch);
 }

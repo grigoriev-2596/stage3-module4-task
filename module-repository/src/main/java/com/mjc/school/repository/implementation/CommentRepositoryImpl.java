@@ -21,18 +21,18 @@ public class CommentRepositoryImpl extends AbstractRepository<CommentEntity, Lon
 
     @Override
     public Page<CommentEntity> getComments(CommentSearchParams params, Pageable pageable) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<CommentEntity> criteriaQuery = criteriaBuilder.createQuery(CommentEntity.class);
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<CommentEntity> criteriaQuery = builder.createQuery(CommentEntity.class);
         Root<CommentEntity> root = criteriaQuery.from(CommentEntity.class);
 
         if (params.content() != null) {
-            criteriaQuery.where(criteriaBuilder.like(criteriaBuilder.lower(root.get("content")), "%" + params.content() + "%"));
+            criteriaQuery.where(builder.like(builder.lower(root.get("content")), "%" + params.content() + "%"));
         }
         if (params.newsId() != null) {
-            criteriaQuery.where(criteriaBuilder.equal(root.get("news").get("id"), params.newsId()));
+            criteriaQuery.where(builder.equal(root.get("news").get("id"), params.newsId()));
         }
         criteriaQuery.distinct(true);
 
-        return getFilteredEntity(criteriaBuilder, criteriaQuery, root, pageable);
+        return getFilteredEntity(builder, criteriaQuery, root, pageable);
     }
 }

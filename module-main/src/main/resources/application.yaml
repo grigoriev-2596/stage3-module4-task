@@ -7,3 +7,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/stage3_module4
     username: postgres
     password: root
+
+server:
+  servlet:
+    context-path: /api/v1

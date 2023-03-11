@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface AuthorService extends BaseService<AuthorDtoRequest, AuthorDtoResponse, Long> {
 
-    Page<AuthorDtoResponse> getAuthors(AuthorSearchCriteriaParams params, Pageable pageable);
+    Page<AuthorDtoResponse> getAuthors(Pageable pageable, AuthorSearchCriteriaParams params);
 
     AuthorDtoResponse patch(Long id, JsonPatch patch);
 }
