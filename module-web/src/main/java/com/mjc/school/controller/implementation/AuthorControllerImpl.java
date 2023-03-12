@@ -8,9 +8,13 @@ import com.mjc.school.service.dto.AuthorDtoResponse;
 import com.mjc.school.service.query.AuthorSearchCriteriaParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,34 +28,62 @@ public class AuthorControllerImpl implements AuthorController {
         this.authorService = authorService;
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
     @Override
-    public List<AuthorDtoResponse> getAuthors(Pageable pageable, String name, Long newsId) {
+    public List<AuthorDtoResponse> getAuthors(
+            @PageableDefault(size = 5)
+            @SortDefault(sort = "name", direction = Sort.Direction.ASC)
+            Pageable pageable,
+
+            @RequestParam(required = false)
+            String name,
+
+            @RequestParam(required = false)
+            Long newsId) {
         AuthorSearchCriteriaParams params = new AuthorSearchCriteriaParams(name, newsId);
         return authorService.getAuthors(pageable, params).getContent();
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/all")
     @Override
-    public AuthorDtoResponse getById(Long id) {
+    public List<AuthorDtoResponse> readAll() {
+        return authorService.getAll();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(value = "/{id:\\d+}")
+    @Override
+    public AuthorDtoResponse readById(@PathVariable Long id) {
         return authorService.getById(id);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping
     @Override
-    public AuthorDtoResponse create(AuthorDtoRequest createRequest) {
+    public AuthorDtoResponse create(@Valid @RequestBody AuthorDtoRequest createRequest) {
         return authorService.create(createRequest);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping
     @Override
-    public AuthorDtoResponse update(Long id, AuthorDtoRequest updateRequest) {
+    public AuthorDtoResponse update(@Valid @RequestBody AuthorDtoRequest updateRequest) {
         return authorService.update(updateRequest);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "/{id:\\d+}")
     @Override
-    public Boolean deleteById(Long id) {
+    public boolean deleteById(@PathVariable Long id) {
         return authorService.deleteById(id);
     }
 
+    @ResponseStatus(HttpStatus.OK)
+    @PatchMapping(value = "/{id:\\d+}", consumes = "application/json-patch+json")
     @Override
-    public AuthorDtoResponse patch(Long id, JsonPatch patch) {
+    public AuthorDtoResponse patch(@PathVariable Long id, @RequestBody JsonPatch patch) {
         return authorService.patch(id, patch);
     }
 

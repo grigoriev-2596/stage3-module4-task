@@ -46,7 +46,6 @@ public class NewsServiceImpl implements NewsService {
 
     private final Validator springValidator;
 
-
     @Autowired
     public NewsServiceImpl(NewsRepositoryImpl newsRepository, AuthorRepositoryImpl authorRepository,
                            TagRepositoryImpl tagRepository, NewsMapper newsMapper, Validator springValidator) {
@@ -66,7 +65,8 @@ public class NewsServiceImpl implements NewsService {
     @Transactional(readOnly = true)
     @Override
     public NewsDtoResponse getById(Long id) {
-        NewsEntity entity = newsRepository.getById(id).orElseThrow(() -> new NotFoundException(String.format(ErrorCode.NEWS_DOES_NOT_EXIST.toString(), id)));
+        NewsEntity entity = newsRepository.getById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(ErrorCode.NEWS_DOES_NOT_EXIST.toString(), id)));
 
         return newsMapper.modelToDtoResponse(entity);
     }
@@ -102,7 +102,7 @@ public class NewsServiceImpl implements NewsService {
     @Transactional(readOnly = true)
     @Override
     public Page<NewsDtoResponse> getNews(Pageable pageable, NewsSearchCriteriaParams params) {
-
+        validateConstraintsOrThrowException(params);
         NewsSearchParams searchParams = new NewsSearchParams(
                 params.title(),
                 params.content(),
@@ -123,16 +123,19 @@ public class NewsServiceImpl implements NewsService {
         try {
             JsonNode node = patch.apply(objectMapper.convertValue(request, JsonNode.class));
             NewsDtoRequest patchedNews = objectMapper.treeToValue(node, NewsDtoRequest.class);
-
-            Set<ConstraintViolation<NewsDtoRequest>> constraintViolations = springValidator.validate(patchedNews);
-            if (!constraintViolations.isEmpty()) {
-                throw new ConstraintViolationException(constraintViolations);
-            }
+            validateConstraintsOrThrowException(patchedNews);
 
             return update(patchedNews);
 
         } catch (JsonPatchException | JsonProcessingException e) {
             throw new RuntimeException(e.getClass() + ": " + e.getMessage());
+        }
+    }
+
+    private <T> void validateConstraintsOrThrowException(T object) {
+        Set<ConstraintViolation<T>> constraintViolations = springValidator.validate(object);
+        if (!constraintViolations.isEmpty()) {
+            throw new ConstraintViolationException(constraintViolations);
         }
     }
 

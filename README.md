@@ -70,7 +70,7 @@ The system should expose CRUD operations for News, Author, Tag and Comments from
   updated
   news as dto, http response status - 200.
 - [x] Update Author – update only name by provided author id and return updated author as dto, http response status -
-  200.
+    200.
 - [x] Update Tag – update only name by provided tag id and return updated tag as dto, http response status - 200.
 - [x] Update Comment – update only content by provided comment id and return updated comment as dto, http response
   status - 200.

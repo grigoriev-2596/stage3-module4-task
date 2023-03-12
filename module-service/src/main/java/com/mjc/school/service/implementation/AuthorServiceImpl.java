@@ -89,6 +89,7 @@ public class AuthorServiceImpl implements AuthorService {
     @Transactional(readOnly = true)
     @Override
     public Page<AuthorDtoResponse> getAuthors(Pageable pageable, AuthorSearchCriteriaParams params) {
+        validateConstraintsOrThrowException(params);
         AuthorSearchParams searchParams = new AuthorSearchParams(params.name(), params.newsId());
 
         Page<AuthorEntity> filteredAuthors = authorRepository.getAuthors(searchParams, pageable);
@@ -105,15 +106,18 @@ public class AuthorServiceImpl implements AuthorService {
         try {
             JsonNode node = patch.apply(objectMapper.convertValue(request, JsonNode.class));
             AuthorDtoRequest patchedAuthor = objectMapper.treeToValue(node, AuthorDtoRequest.class);
-
-            Set<ConstraintViolation<AuthorDtoRequest>> constraintViolations = springValidator.validate(patchedAuthor);
-            if (!constraintViolations.isEmpty()) {
-                throw new ConstraintViolationException(constraintViolations);
-            }
+            validateConstraintsOrThrowException(patchedAuthor);
 
             return update(patchedAuthor);
         } catch (JsonPatchException | JsonProcessingException e) {
             throw new RuntimeException(e.getClass() + ": " + e.getMessage());
+        }
+    }
+
+    private <T> void validateConstraintsOrThrowException(T object) {
+        Set<ConstraintViolation<T>> constraintViolations = springValidator.validate(object);
+        if (!constraintViolations.isEmpty()) {
+            throw new ConstraintViolationException(constraintViolations);
         }
     }
 

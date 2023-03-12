@@ -24,7 +24,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -38,12 +42,15 @@ public class CommentServiceImpl implements CommentService {
             .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
             .findAndRegisterModules();
 
+    private final Validator springValidator;
+
     @Autowired
     public CommentServiceImpl(CommentRepositoryImpl commentRepository, NewsRepositoryImpl newsRepository,
-                              CommentMapper commentMapper) {
+                              CommentMapper commentMapper, Validator springValidator) {
         this.commentRepository = commentRepository;
         this.newsRepository = newsRepository;
         this.commentMapper = commentMapper;
+        this.springValidator = springValidator;
     }
 
     @Transactional(readOnly = true)
@@ -90,6 +97,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     @Override
     public Page<CommentDtoResponse> getComments(Pageable pageable, CommentSearchCriteriaParams params) {
+        validateConstraintsOrThrowException(params);
         CommentSearchParams searchParams = new CommentSearchParams(params.content(), params.newsId());
 
         Page<CommentEntity> commentEntityPage = commentRepository.getComments(searchParams, pageable);
@@ -100,17 +108,24 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public CommentDtoResponse patch(Long id, JsonPatch patch) {
-        CommentEntity entity = commentRepository.getById(id)
-                .orElseThrow(() -> new NotFoundException(String.format(ErrorCode.COMMENT_DOES_NOT_EXIST.toString(), id)));
+        CommentDtoResponse response = getById(id);
+        CommentDtoRequest request = new CommentDtoRequest(response.id(), response.content(), response.newsId());
 
         try {
-            JsonNode patched = patch.apply(objectMapper.convertValue(entity, JsonNode.class));
-            CommentEntity patchedComment = objectMapper.treeToValue(patched, CommentEntity.class);
-            patchedComment = commentRepository.update(patchedComment);
+            JsonNode node = patch.apply(objectMapper.convertValue(request, JsonNode.class));
+            CommentDtoRequest patchedComment = objectMapper.treeToValue(node, CommentDtoRequest.class);
+            validateConstraintsOrThrowException(patchedComment);
 
-            return commentMapper.modelToDtoResponse(patchedComment);
+            return update(patchedComment);
         } catch (JsonPatchException | JsonProcessingException e) {
             throw new RuntimeException(e.getClass() + ": " + e.getMessage());
+        }
+    }
+
+    private <T> void validateConstraintsOrThrowException(T object) {
+        Set<ConstraintViolation<T>> constraintViolations = springValidator.validate(object);
+        if (!constraintViolations.isEmpty()) {
+            throw new ConstraintViolationException(constraintViolations);
         }
     }
 

@@ -89,6 +89,7 @@ public class TagServiceImpl implements TagService {
     @Transactional(readOnly = true)
     @Override
     public Page<TagDtoResponse> getTags(Pageable pageable, TagSearchCriteriaParams params) {
+        validateConstraintsOrThrowException(params);
         TagSearchParams searchParams = new TagSearchParams(params.name(), params.newsId());
 
         Page<TagEntity> tagEntityPage = tagRepository.getTags(searchParams, pageable);
@@ -105,15 +106,18 @@ public class TagServiceImpl implements TagService {
         try {
             JsonNode node = patch.apply(objectMapper.convertValue(request, JsonNode.class));
             TagDtoRequest patchedTag = objectMapper.treeToValue(node, TagDtoRequest.class);
-
-            Set<ConstraintViolation<TagDtoRequest>> constraintViolations = springValidator.validate(patchedTag);
-            if (!constraintViolations.isEmpty()) {
-                throw new ConstraintViolationException(constraintViolations);
-            }
+            validateConstraintsOrThrowException(patchedTag);
 
             return update(patchedTag);
         } catch (JsonPatchException | JsonProcessingException e) {
             throw new RuntimeException(e.getClass() + ": " + e.getMessage());
+        }
+    }
+
+    private <T> void validateConstraintsOrThrowException(T object) {
+        Set<ConstraintViolation<T>> constraintViolations = springValidator.validate(object);
+        if (!constraintViolations.isEmpty()) {
+            throw new ConstraintViolationException(constraintViolations);
         }
     }
 
