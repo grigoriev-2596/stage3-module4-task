@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/comments")
+@RequestMapping(value = "/api/v1/comments")
 public class CommentControllerImpl implements CommentController {
 
     private final CommentService commentService;
@@ -67,7 +67,7 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping(value = "/{id:\\d+}")
+    @PutMapping
     @Override
     public CommentDtoResponse update(@Valid @RequestBody CommentDtoRequest updateRequest) {
         return commentService.update(updateRequest);

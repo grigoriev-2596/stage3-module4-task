@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/authors")
+@RequestMapping(value = "/api/v1/authors")
 public class AuthorControllerImpl implements AuthorController {
 
     private final AuthorService authorService;

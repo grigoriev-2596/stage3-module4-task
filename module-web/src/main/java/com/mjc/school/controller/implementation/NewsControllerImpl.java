@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/news")
+@RequestMapping(value = "/api/v1/news")
 public class NewsControllerImpl implements NewsController {
 
     private final NewsService newsService;
@@ -76,7 +76,7 @@ public class NewsControllerImpl implements NewsController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping(value = "/{id:\\d+}")
+    @PutMapping
     @Override
     public NewsDtoResponse update(@Valid @RequestBody NewsDtoRequest updateRequest) {
         return newsService.update(updateRequest);

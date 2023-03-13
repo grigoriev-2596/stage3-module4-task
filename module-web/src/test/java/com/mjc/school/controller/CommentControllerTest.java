@@ -64,7 +64,7 @@ public class CommentControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post("/comments")
+                .post("/api/v1/comments")
                 .then().log().all()
                 .statusCode(201)
                 .extract().as(CommentDtoResponse.class);
@@ -80,7 +80,7 @@ public class CommentControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post("/comments")
+                .post("/api/v1/comments")
                 .then().log().all()
                 .statusCode(400);
     }
@@ -96,7 +96,7 @@ public class CommentControllerTest {
         CommentDtoResponse actual = RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/comments/" + id)
+                .get("/api/v1/comments/" + id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(CommentDtoResponse.class);
@@ -114,7 +114,7 @@ public class CommentControllerTest {
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/comments/" + id)
+                .get("/api/v1/comments/" + id)
                 .then().log().all()
                 .statusCode(404);
 
@@ -132,7 +132,7 @@ public class CommentControllerTest {
         List<CommentDtoResponse> actual = RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/comments")
+                .get("/api/v1/comments")
                 .then().log().all()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", CommentDtoResponse.class);
@@ -142,8 +142,7 @@ public class CommentControllerTest {
 
     @Test
     public void successUpdateCommentTest() {
-        final long id = secondTestResponse.id();
-        final CommentDtoRequest request = new CommentDtoRequest(id, secondTestResponse.content(), secondTestResponse.newsId());
+        final CommentDtoRequest request = new CommentDtoRequest(secondTestResponse.id(), secondTestResponse.content(), secondTestResponse.newsId());
         final CommentDtoResponse expected = secondTestResponse;
 
         Mockito.when(commentService.update(request)).thenReturn(expected);
@@ -152,7 +151,7 @@ public class CommentControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/comments/" + id)
+                .put("/api/v1/comments")
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(CommentDtoResponse.class);
@@ -162,14 +161,13 @@ public class CommentControllerTest {
 
     @Test
     public void unsuccessfulUpdateNotValidCommentTest() {
-        long id = secondTestResponse.id();
-        final CommentDtoRequest request = new CommentDtoRequest(id, "cont", secondTestResponse.newsId());
+        final CommentDtoRequest request = new CommentDtoRequest(secondTestResponse.id(), "cont", secondTestResponse.newsId());
 
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/comments/" + id)
+                .put("/api/v1/comments")
                 .then().log().all()
                 .statusCode(400);
     }
@@ -186,7 +184,7 @@ public class CommentControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/comments/" + id)
+                .put("/api/v1/comments")
                 .then().log().all()
                 .statusCode(404);
     }
@@ -202,7 +200,7 @@ public class CommentControllerTest {
                 .contentType("application/json-patch+json")
                 .body("[{\"op\":\"replace\", \"path\" : \"/content\", \"value\" : \"" + secondTestResponse.content() + "\"}]")
                 .when()
-                .patch("/comments/" + id)
+                .patch("/api/v1/comments/" + id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(CommentDtoResponse.class);
@@ -221,7 +219,7 @@ public class CommentControllerTest {
                 .contentType("application/json-patch+json")
                 .body("[{\"op\":\"replace\", \"path\" : \"/content\", \"value\" : \"" + secondTestResponse.content() + "\"}]")
                 .when()
-                .patch("/comments/" + id)
+                .patch("/api/v1/comments/" + id)
                 .then().log().all()
                 .statusCode(404);
     }

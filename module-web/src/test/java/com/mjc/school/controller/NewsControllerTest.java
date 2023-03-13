@@ -72,7 +72,7 @@ public class NewsControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post("/news")
+                .post("/api/v1/news")
                 .then().log().all()
                 .statusCode(201)
                 .extract().as(NewsDtoResponse.class);
@@ -89,7 +89,7 @@ public class NewsControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post("/news")
+                .post("/api/v1/news")
                 .then().log().all()
                 .statusCode(400);
     }
@@ -105,7 +105,7 @@ public class NewsControllerTest {
         NewsDtoResponse actual = RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/news/" + id)
+                .get("/api/v1/news/" + id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(NewsDtoResponse.class);
@@ -123,7 +123,7 @@ public class NewsControllerTest {
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/news/" + id)
+                .get("/api/v1/news/" + id)
                 .then().log().all()
                 .statusCode(404);
 
@@ -141,7 +141,7 @@ public class NewsControllerTest {
         List<NewsDtoResponse> actual = RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/news")
+                .get("/api/v1/news")
                 .then().log().all()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", NewsDtoResponse.class);
@@ -151,8 +151,8 @@ public class NewsControllerTest {
 
     @Test
     public void successUpdateNewsTest() {
-        final long id = secondTestResponse.id();
-        final NewsDtoRequest request = new NewsDtoRequest(id, secondTestResponse.title(), secondTestResponse.content(), 1L, List.of(1L, 2L));
+        final NewsDtoRequest request = new NewsDtoRequest(secondTestResponse.id(), secondTestResponse.title(),
+                secondTestResponse.content(), 1L, List.of(1L, 2L));
         final NewsDtoResponse expected = secondTestResponse;
 
         Mockito.when(newsService.update(request)).thenReturn(expected);
@@ -161,7 +161,7 @@ public class NewsControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/news/" + id)
+                .put("/api/v1/news")
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(NewsDtoResponse.class);
@@ -171,15 +171,15 @@ public class NewsControllerTest {
 
     @Test
     public void unsuccessfulUpdateNotValidNewsTest() {
-        long id = secondTestResponse.id();
         String notValidContent = "cont";
-        final NewsDtoRequest request = new NewsDtoRequest(id, firstTestResponse.title(), notValidContent, 1L, List.of(1L, 2L));
+        final NewsDtoRequest request = new NewsDtoRequest(secondTestResponse.id(), firstTestResponse.title(),
+                notValidContent, 1L, List.of(1L, 2L));
 
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/news/" + id)
+                .put("/api/v1/news")
                 .then().log().all()
                 .statusCode(400);
     }
@@ -196,7 +196,7 @@ public class NewsControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/news/" + id)
+                .put("/api/v1/news")
                 .then().log().all()
                 .statusCode(404);
     }
@@ -212,7 +212,7 @@ public class NewsControllerTest {
                 .contentType("application/json-patch+json")
                 .body("[{\"op\":\"replace\", \"path\" : \"/title\", \"value\" : \"" + secondTestResponse.title() + "\"}]")
                 .when()
-                .patch("/news/" + id)
+                .patch("/api/v1/news/" + id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(NewsDtoResponse.class);
@@ -231,7 +231,7 @@ public class NewsControllerTest {
                 .contentType("application/json-patch+json")
                 .body("[{\"op\":\"replace\", \"path\" : \"/content\", \"value\" : \"" + secondTestResponse.content() + "\"}]")
                 .when()
-                .patch("/newss/" + id)
+                .patch("/api/v1/news/" + id)
                 .then().log().all()
                 .statusCode(404);
     }

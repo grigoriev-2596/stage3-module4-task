@@ -18,7 +18,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/tags")
+@RequestMapping(value = "/api/v1/tags")
 public class TagControllerImpl implements TagController {
 
     private final TagService tagService;
@@ -67,7 +67,7 @@ public class TagControllerImpl implements TagController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping(value = "/{id:\\d+}")
+    @PutMapping
     @Override
     public TagDtoResponse update(@Valid @RequestBody TagDtoRequest updateRequest) {
         return tagService.update(updateRequest);

@@ -62,7 +62,7 @@ public class TagControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post("/tags")
+                .post("/api/v1/tags")
                 .then().log().all()
                 .statusCode(201)
                 .extract().as(TagDtoResponse.class);
@@ -78,7 +78,7 @@ public class TagControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post("/tags")
+                .post("/api/v1/tags")
                 .then().log().all()
                 .statusCode(400);
     }
@@ -94,7 +94,7 @@ public class TagControllerTest {
         TagDtoResponse actual = RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/tags/" + id)
+                .get("/api/v1/tags/" + id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(TagDtoResponse.class);
@@ -112,7 +112,7 @@ public class TagControllerTest {
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/tags/" + id)
+                .get("/api/v1/tags/" + id)
                 .then().log().all()
                 .statusCode(404);
 
@@ -130,7 +130,7 @@ public class TagControllerTest {
         List<TagDtoResponse> actual = RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/tags")
+                .get("/api/v1/tags")
                 .then().log().all()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", TagDtoResponse.class);
@@ -140,8 +140,7 @@ public class TagControllerTest {
 
     @Test
     public void successUpdateTagTest() {
-        final long id = secondTestResponse.id();
-        final TagDtoRequest request = new TagDtoRequest(id, secondTestResponse.name());
+        final TagDtoRequest request = new TagDtoRequest(secondTestResponse.id(), secondTestResponse.name());
         final TagDtoResponse expected = secondTestResponse;
 
         Mockito.when(tagService.update(request)).thenReturn(expected);
@@ -150,7 +149,7 @@ public class TagControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/tags/" + id)
+                .put("/api/v1/tags")
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(TagDtoResponse.class);
@@ -160,14 +159,13 @@ public class TagControllerTest {
 
     @Test
     public void unsuccessfulUpdateNotValidTagTest() {
-        long id = secondTestResponse.id();
-        final TagDtoRequest request = new TagDtoRequest(id, "we");
+        final TagDtoRequest request = new TagDtoRequest(secondTestResponse.id(), "we");
 
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/tags/" + id)
+                .put("/api/v1/tags")
                 .then().log().all()
                 .statusCode(400);
     }
@@ -184,7 +182,7 @@ public class TagControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/tags/" + id)
+                .put("/api/v1/tags")
                 .then().log().all()
                 .statusCode(404);
     }
@@ -200,7 +198,7 @@ public class TagControllerTest {
                 .contentType("application/json-patch+json")
                 .body("[{\"op\":\"replace\", \"path\" : \"/name\", \"value\" : \"" + secondTestResponse.name() + "\"}]")
                 .when()
-                .patch("/tags/" + id)
+                .patch("/api/v1/tags/" + id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(TagDtoResponse.class);
@@ -219,7 +217,7 @@ public class TagControllerTest {
                 .contentType("application/json-patch+json")
                 .body("[{\"op\":\"replace\", \"path\" : \"/name\", \"value\" : \"" + secondTestResponse.name() + "\"}]")
                 .when()
-                .patch("/tags/" + id)
+                .patch("/api/v1/tags/" + id)
                 .then().log().all()
                 .statusCode(404);
     }

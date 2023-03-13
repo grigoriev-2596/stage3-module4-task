@@ -44,6 +44,8 @@ public class AuthorControllerTest {
     private AuthorDtoResponse firstTestResponse;
     private AuthorDtoResponse secondTestResponse;
 
+
+
     @BeforeEach
     void setUp() {
         RestAssuredMockMvc.mockMvc(mockMvc);
@@ -63,7 +65,7 @@ public class AuthorControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post("/authors")
+                .post("/api/v1/authors")
                 .then().log().all()
                 .statusCode(201)
                 .extract().as(AuthorDtoResponse.class);
@@ -79,7 +81,7 @@ public class AuthorControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .post("/authors")
+                .post("/api/v1/authors")
                 .then().log().all()
                 .statusCode(400);
     }
@@ -95,7 +97,7 @@ public class AuthorControllerTest {
         AuthorDtoResponse actual = RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/authors/" + id)
+                .get("/api/v1/authors/" + id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(AuthorDtoResponse.class);
@@ -113,7 +115,7 @@ public class AuthorControllerTest {
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/authors/" + id)
+                .get("/api/v1/authors/" + id)
                 .then().log().all()
                 .statusCode(404);
 
@@ -131,7 +133,7 @@ public class AuthorControllerTest {
         List<AuthorDtoResponse> actual = RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .when()
-                .get("/authors")
+                .get("/api/v1/authors")
                 .then().log().all()
                 .statusCode(200)
                 .extract().body().jsonPath().getList(".", AuthorDtoResponse.class);
@@ -141,8 +143,7 @@ public class AuthorControllerTest {
 
     @Test
     public void successUpdateAuthorTest() {
-        final long id = secondTestResponse.id();
-        final AuthorDtoRequest request = new AuthorDtoRequest(id, secondTestResponse.name());
+        final AuthorDtoRequest request = new AuthorDtoRequest(secondTestResponse.id(), secondTestResponse.name());
         final AuthorDtoResponse expected = secondTestResponse;
 
         Mockito.when(authorService.update(request)).thenReturn(expected);
@@ -151,7 +152,7 @@ public class AuthorControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/authors/" + id)
+                .put("/api/v1/authors")
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(AuthorDtoResponse.class);
@@ -161,14 +162,13 @@ public class AuthorControllerTest {
 
     @Test
     public void unsuccessfulUpdateNotValidAuthorTest() {
-        long id = 5L;
-        final AuthorDtoRequest request = new AuthorDtoRequest(id, "Ivaaaaaaaaaanov Peeeeeeeeeeeeeeeetr");
+        final AuthorDtoRequest request = new AuthorDtoRequest(5L, "Ivaaaaaaaaaanov Peeeeeeeeeeeeeeeetr");
 
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/authors/" + id)
+                .put("/api/v1/authors")
                 .then().log().all()
                 .statusCode(400);
     }
@@ -185,7 +185,7 @@ public class AuthorControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/authors/" + id)
+                .put("/api/v1/authors")
                 .then().log().all()
                 .statusCode(404);
     }
@@ -201,7 +201,7 @@ public class AuthorControllerTest {
                 .contentType("application/json-patch+json")
                 .body("[{\"op\":\"replace\", \"path\" : \"/name\", \"value\" : \"" + secondTestResponse.name() + "\"}]")
                 .when()
-                .patch("/authors/" + id)
+                .patch("/api/v1/authors/" + id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(AuthorDtoResponse.class);
@@ -220,7 +220,7 @@ public class AuthorControllerTest {
                 .contentType("application/json-patch+json")
                 .body("[{\"op\":\"replace\", \"path\" : \"/name\", \"value\" : \"" + secondTestResponse.name() + "\"}]")
                 .when()
-                .patch("/authors/" + id)
+                .patch("/api/v1/authors/" + id)
                 .then().log().all()
                 .statusCode(404);
     }
