@@ -2,7 +2,7 @@ package com.mjc.school.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
 import com.mjc.school.controller.exception_handler.RestControllerExceptionHandler;
-import com.mjc.school.controller.impl.NewsControllerImpl;
+import com.mjc.school.controller.impl.NewsRestController;
 import com.mjc.school.service.dto.AuthorDtoResponse;
 import com.mjc.school.service.dto.NewsDtoRequest;
 import com.mjc.school.service.dto.NewsDtoResponse;
@@ -33,8 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
-@WebMvcTest({NewsControllerImpl.class})
-@ContextConfiguration(classes = {NewsControllerImpl.class, RestControllerExceptionHandler.class})
+@WebMvcTest({NewsRestController.class})
+@ContextConfiguration(classes = {NewsRestController.class, RestControllerExceptionHandler.class})
 public class NewsControllerTest {
 
     @MockBean
@@ -151,7 +151,8 @@ public class NewsControllerTest {
 
     @Test
     public void successUpdateNewsTest() {
-        final NewsDtoRequest request = new NewsDtoRequest(secondTestResponse.id(), secondTestResponse.title(),
+        Long id = secondTestResponse.id();
+        final NewsDtoRequest request = new NewsDtoRequest(id, secondTestResponse.title(),
                 secondTestResponse.content(), 1L, List.of(1L, 2L));
         final NewsDtoResponse expected = secondTestResponse;
 
@@ -161,7 +162,7 @@ public class NewsControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/news")
+                .put("/api/v1/news/"+id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(NewsDtoResponse.class);
@@ -172,14 +173,15 @@ public class NewsControllerTest {
     @Test
     public void unsuccessfulUpdateNotValidNewsTest() {
         String notValidContent = "cont";
-        final NewsDtoRequest request = new NewsDtoRequest(secondTestResponse.id(), firstTestResponse.title(),
+        Long id = secondTestResponse.id();
+        final NewsDtoRequest request = new NewsDtoRequest(id, firstTestResponse.title(),
                 notValidContent, 1L, List.of(1L, 2L));
 
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/news")
+                .put("/api/v1/news/"+id)
                 .then().log().all()
                 .statusCode(400);
     }
@@ -196,7 +198,7 @@ public class NewsControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/news")
+                .put("/api/v1/news/"+id)
                 .then().log().all()
                 .statusCode(404);
     }

@@ -2,7 +2,7 @@ package com.mjc.school.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
 import com.mjc.school.controller.exception_handler.RestControllerExceptionHandler;
-import com.mjc.school.controller.impl.CommentControllerImpl;
+import com.mjc.school.controller.impl.CommentRestController;
 import com.mjc.school.service.dto.CommentDtoRequest;
 import com.mjc.school.service.dto.CommentDtoResponse;
 import com.mjc.school.service.exceptions.ErrorCode;
@@ -31,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
-@WebMvcTest({CommentControllerImpl.class})
-@ContextConfiguration(classes = {CommentControllerImpl.class, RestControllerExceptionHandler.class})
+@WebMvcTest({CommentRestController.class})
+@ContextConfiguration(classes = {CommentRestController.class, RestControllerExceptionHandler.class})
 public class CommentControllerTest {
 
     @MockBean
@@ -142,7 +142,8 @@ public class CommentControllerTest {
 
     @Test
     public void successUpdateCommentTest() {
-        final CommentDtoRequest request = new CommentDtoRequest(secondTestResponse.id(), secondTestResponse.content(), secondTestResponse.newsId());
+        Long id = secondTestResponse.id();
+        final CommentDtoRequest request = new CommentDtoRequest(id, secondTestResponse.content(), secondTestResponse.newsId());
         final CommentDtoResponse expected = secondTestResponse;
 
         Mockito.when(commentService.update(request)).thenReturn(expected);
@@ -151,7 +152,7 @@ public class CommentControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/comments")
+                .put("/api/v1/comments/" + id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(CommentDtoResponse.class);
@@ -161,13 +162,14 @@ public class CommentControllerTest {
 
     @Test
     public void unsuccessfulUpdateNotValidCommentTest() {
-        final CommentDtoRequest request = new CommentDtoRequest(secondTestResponse.id(), "cont", secondTestResponse.newsId());
+        Long id = secondTestResponse.id();
+        final CommentDtoRequest request = new CommentDtoRequest(id, "cont", secondTestResponse.newsId());
 
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/comments")
+                .put("/api/v1/comments/" + id)
                 .then().log().all()
                 .statusCode(400);
     }
@@ -184,7 +186,7 @@ public class CommentControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/comments")
+                .put("/api/v1/comments/" + id)
                 .then().log().all()
                 .statusCode(404);
     }

@@ -2,7 +2,7 @@ package com.mjc.school.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
 import com.mjc.school.controller.exception_handler.RestControllerExceptionHandler;
-import com.mjc.school.controller.impl.AuthorControllerImpl;
+import com.mjc.school.controller.impl.AuthorRestController;
 import com.mjc.school.service.dto.AuthorDtoRequest;
 import com.mjc.school.service.dto.AuthorDtoResponse;
 import com.mjc.school.service.exceptions.ErrorCode;
@@ -31,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
-@WebMvcTest({AuthorControllerImpl.class})
-@ContextConfiguration(classes = {AuthorControllerImpl.class, RestControllerExceptionHandler.class})
+@WebMvcTest({AuthorRestController.class})
+@ContextConfiguration(classes = {AuthorRestController.class, RestControllerExceptionHandler.class})
 public class AuthorControllerTest {
 
     @MockBean
@@ -143,7 +143,8 @@ public class AuthorControllerTest {
 
     @Test
     public void successUpdateAuthorTest() {
-        final AuthorDtoRequest request = new AuthorDtoRequest(secondTestResponse.id(), secondTestResponse.name());
+        Long id = secondTestResponse.id();
+        final AuthorDtoRequest request = new AuthorDtoRequest(id, secondTestResponse.name());
         final AuthorDtoResponse expected = secondTestResponse;
 
         Mockito.when(authorService.update(request)).thenReturn(expected);
@@ -152,7 +153,7 @@ public class AuthorControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/authors")
+                .put("/api/v1/authors/" + id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(AuthorDtoResponse.class);
@@ -162,13 +163,14 @@ public class AuthorControllerTest {
 
     @Test
     public void unsuccessfulUpdateNotValidAuthorTest() {
-        final AuthorDtoRequest request = new AuthorDtoRequest(5L, "Ivaaaaaaaaaanov Peeeeeeeeeeeeeeeetr");
+        long id = 5L;
+        final AuthorDtoRequest request = new AuthorDtoRequest(id, "Ivaaaaaaaaaanov Peeeeeeeeeeeeeeeetr");
 
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/authors")
+                .put("/api/v1/authors/" + id)
                 .then().log().all()
                 .statusCode(400);
     }
@@ -185,7 +187,7 @@ public class AuthorControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/authors")
+                .put("/api/v1/authors/" + id)
                 .then().log().all()
                 .statusCode(404);
     }

@@ -19,12 +19,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/authors")
-public class AuthorControllerImpl implements AuthorController {
+public class AuthorRestController implements AuthorController {
 
     private final AuthorService authorService;
 
     @Autowired
-    public AuthorControllerImpl(AuthorService authorService) {
+    public AuthorRestController(AuthorService authorService) {
         this.authorService = authorService;
     }
 
@@ -46,13 +46,6 @@ public class AuthorControllerImpl implements AuthorController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/all")
-    @Override
-    public List<AuthorDtoResponse> readAll() {
-        return authorService.getAll();
-    }
-
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id:\\d+}")
     @Override
     public AuthorDtoResponse readById(@PathVariable Long id) {
@@ -67,17 +60,17 @@ public class AuthorControllerImpl implements AuthorController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping
+    @PutMapping(value = "/{id:\\d+}")
     @Override
-    public AuthorDtoResponse update(@Valid @RequestBody AuthorDtoRequest updateRequest) {
+    public AuthorDtoResponse update(@PathVariable Long id, @Valid @RequestBody AuthorDtoRequest updateRequest) {
         return authorService.update(updateRequest);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{id:\\d+}")
     @Override
-    public boolean deleteById(@PathVariable Long id) {
-        return authorService.deleteById(id);
+    public void deleteById(@PathVariable Long id) {
+        authorService.deleteById(id);
     }
 
     @ResponseStatus(HttpStatus.OK)

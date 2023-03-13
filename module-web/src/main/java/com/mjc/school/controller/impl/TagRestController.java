@@ -19,12 +19,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/tags")
-public class TagControllerImpl implements TagController {
+public class TagRestController implements TagController {
 
     private final TagService tagService;
 
     @Autowired
-    public TagControllerImpl(TagService tagService) {
+    public TagRestController(TagService tagService) {
         this.tagService = tagService;
     }
 
@@ -46,13 +46,6 @@ public class TagControllerImpl implements TagController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/all")
-    @Override
-    public List<TagDtoResponse> readAll() {
-        return tagService.getAll();
-    }
-
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id:\\d+}")
     @Override
     public TagDtoResponse readById(@PathVariable Long id) {
@@ -67,17 +60,17 @@ public class TagControllerImpl implements TagController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping
+    @PutMapping(value = "/{id:\\d+}")
     @Override
-    public TagDtoResponse update(@Valid @RequestBody TagDtoRequest updateRequest) {
+    public TagDtoResponse update(@PathVariable Long id, @Valid @RequestBody TagDtoRequest updateRequest) {
         return tagService.update(updateRequest);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{id:\\d+}")
     @Override
-    public boolean deleteById(@PathVariable Long id) {
-        return tagService.deleteById(id);
+    public void deleteById(@PathVariable Long id) {
+        tagService.deleteById(id);
     }
 
     @ResponseStatus(HttpStatus.OK)

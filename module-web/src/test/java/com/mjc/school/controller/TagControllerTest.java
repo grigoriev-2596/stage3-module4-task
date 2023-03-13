@@ -2,7 +2,7 @@ package com.mjc.school.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
 import com.mjc.school.controller.exception_handler.RestControllerExceptionHandler;
-import com.mjc.school.controller.impl.TagControllerImpl;
+import com.mjc.school.controller.impl.TagRestController;
 import com.mjc.school.service.dto.TagDtoRequest;
 import com.mjc.school.service.dto.TagDtoResponse;
 import com.mjc.school.service.exceptions.ErrorCode;
@@ -30,8 +30,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 
-@WebMvcTest({TagControllerImpl.class})
-@ContextConfiguration(classes = {TagControllerImpl.class, RestControllerExceptionHandler.class})
+@WebMvcTest({TagRestController.class})
+@ContextConfiguration(classes = {TagRestController.class, RestControllerExceptionHandler.class})
 public class TagControllerTest {
 
     @MockBean
@@ -140,7 +140,8 @@ public class TagControllerTest {
 
     @Test
     public void successUpdateTagTest() {
-        final TagDtoRequest request = new TagDtoRequest(secondTestResponse.id(), secondTestResponse.name());
+        Long id = secondTestResponse.id();
+        final TagDtoRequest request = new TagDtoRequest(id, secondTestResponse.name());
         final TagDtoResponse expected = secondTestResponse;
 
         Mockito.when(tagService.update(request)).thenReturn(expected);
@@ -149,7 +150,7 @@ public class TagControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/tags")
+                .put("/api/v1/tags/" + id)
                 .then().log().all()
                 .statusCode(200)
                 .extract().as(TagDtoResponse.class);
@@ -159,13 +160,14 @@ public class TagControllerTest {
 
     @Test
     public void unsuccessfulUpdateNotValidTagTest() {
-        final TagDtoRequest request = new TagDtoRequest(secondTestResponse.id(), "we");
+        Long id = secondTestResponse.id();
+        final TagDtoRequest request = new TagDtoRequest(id, "we");
 
         RestAssuredMockMvc.given()
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/tags")
+                .put("/api/v1/tags/" + id)
                 .then().log().all()
                 .statusCode(400);
     }
@@ -182,7 +184,7 @@ public class TagControllerTest {
                 .contentType("application/json")
                 .body(request)
                 .when()
-                .put("/api/v1/tags")
+                .put("/api/v1/tags/" + id)
                 .then().log().all()
                 .statusCode(404);
     }

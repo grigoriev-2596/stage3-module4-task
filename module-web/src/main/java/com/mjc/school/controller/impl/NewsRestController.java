@@ -19,12 +19,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/news")
-public class NewsControllerImpl implements NewsController {
+public class NewsRestController implements NewsController {
 
     private final NewsService newsService;
 
     @Autowired
-    public NewsControllerImpl(NewsService newsService) {
+    public NewsRestController(NewsService newsService) {
         this.newsService = newsService;
     }
 
@@ -55,13 +55,6 @@ public class NewsControllerImpl implements NewsController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/all")
-    @Override
-    public List<NewsDtoResponse> readAll() {
-        return newsService.getAll();
-    }
-
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id:\\d+}")
     @Override
     public NewsDtoResponse readById(@PathVariable Long id) {
@@ -76,17 +69,17 @@ public class NewsControllerImpl implements NewsController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping
+    @PutMapping(value = "/{id:\\d+}")
     @Override
-    public NewsDtoResponse update(@Valid @RequestBody NewsDtoRequest updateRequest) {
+    public NewsDtoResponse update(@PathVariable Long id, @Valid @RequestBody NewsDtoRequest updateRequest) {
         return newsService.update(updateRequest);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{id:\\d+}")
     @Override
-    public boolean deleteById(@PathVariable Long id) {
-        return newsService.deleteById(id);
+    public void deleteById(@PathVariable Long id) {
+        newsService.deleteById(id);
     }
 
     @ResponseStatus(HttpStatus.OK)

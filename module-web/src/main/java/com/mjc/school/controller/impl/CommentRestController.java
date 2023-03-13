@@ -19,12 +19,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/v1/comments")
-public class CommentControllerImpl implements CommentController {
+public class CommentRestController implements CommentController {
 
     private final CommentService commentService;
 
     @Autowired
-    public CommentControllerImpl(CommentService commentService) {
+    public CommentRestController(CommentService commentService) {
         this.commentService = commentService;
     }
 
@@ -46,13 +46,6 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/all")
-    @Override
-    public List<CommentDtoResponse> readAll() {
-        return commentService.getAll();
-    }
-
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{id:\\d+}")
     @Override
     public CommentDtoResponse readById(@PathVariable Long id) {
@@ -67,17 +60,17 @@ public class CommentControllerImpl implements CommentController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping
+    @PutMapping(value = "/{id:\\d+}")
     @Override
-    public CommentDtoResponse update(@Valid @RequestBody CommentDtoRequest updateRequest) {
+    public CommentDtoResponse update(@PathVariable Long id, @Valid @RequestBody CommentDtoRequest updateRequest) {
         return commentService.update(updateRequest);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{id:\\d+}")
     @Override
-    public boolean deleteById(@PathVariable Long id) {
-        return commentService.deleteById(id);
+    public void deleteById(@PathVariable Long id) {
+        commentService.deleteById(id);
     }
 
     @ResponseStatus(HttpStatus.OK)
