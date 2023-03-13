@@ -1,4 +1,4 @@
-package com.mjc.school.controller.implementation;
+package com.mjc.school.controller.impl;
 
 import com.github.fge.jsonpatch.JsonPatch;
 import com.mjc.school.controller.AuthorController;

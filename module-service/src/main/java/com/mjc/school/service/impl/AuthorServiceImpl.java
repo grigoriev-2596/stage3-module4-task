@@ -1,4 +1,4 @@
-package com.mjc.school.service.implementation;
+package com.mjc.school.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
-import com.mjc.school.repository.implementation.AuthorRepositoryImpl;
+import com.mjc.school.repository.impl.AuthorRepositoryImpl;
 import com.mjc.school.repository.model.AuthorEntity;
 import com.mjc.school.repository.query.AuthorSearchParams;
 import com.mjc.school.service.AuthorService;

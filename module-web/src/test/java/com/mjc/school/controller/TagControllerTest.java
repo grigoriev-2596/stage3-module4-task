@@ -2,12 +2,12 @@ package com.mjc.school.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
 import com.mjc.school.controller.exception_handler.RestControllerExceptionHandler;
-import com.mjc.school.controller.implementation.TagControllerImpl;
+import com.mjc.school.controller.impl.TagControllerImpl;
 import com.mjc.school.service.dto.TagDtoRequest;
 import com.mjc.school.service.dto.TagDtoResponse;
 import com.mjc.school.service.exceptions.ErrorCode;
 import com.mjc.school.service.exceptions.NotFoundException;
-import com.mjc.school.service.implementation.TagServiceImpl;
+import com.mjc.school.service.impl.TagServiceImpl;
 import com.mjc.school.service.query.TagSearchCriteriaParams;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;

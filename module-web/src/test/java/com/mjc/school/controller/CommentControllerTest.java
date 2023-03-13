@@ -2,12 +2,12 @@ package com.mjc.school.controller;
 
 import com.github.fge.jsonpatch.JsonPatch;
 import com.mjc.school.controller.exception_handler.RestControllerExceptionHandler;
-import com.mjc.school.controller.implementation.CommentControllerImpl;
+import com.mjc.school.controller.impl.CommentControllerImpl;
 import com.mjc.school.service.dto.CommentDtoRequest;
 import com.mjc.school.service.dto.CommentDtoResponse;
 import com.mjc.school.service.exceptions.ErrorCode;
 import com.mjc.school.service.exceptions.NotFoundException;
-import com.mjc.school.service.implementation.CommentServiceImpl;
+import com.mjc.school.service.impl.CommentServiceImpl;
 import com.mjc.school.service.query.CommentSearchCriteriaParams;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;

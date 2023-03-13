@@ -1,4 +1,4 @@
-package com.mjc.school.service.implementation;
+package com.mjc.school.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.github.fge.jsonpatch.JsonPatchException;
-import com.mjc.school.repository.implementation.CommentRepositoryImpl;
-import com.mjc.school.repository.implementation.NewsRepositoryImpl;
+import com.mjc.school.repository.impl.CommentRepositoryImpl;
+import com.mjc.school.repository.impl.NewsRepositoryImpl;
 import com.mjc.school.repository.model.CommentEntity;
 import com.mjc.school.repository.query.CommentSearchParams;
 import com.mjc.school.service.CommentService;

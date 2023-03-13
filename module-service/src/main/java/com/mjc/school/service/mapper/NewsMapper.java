@@ -1,7 +1,7 @@
 package com.mjc.school.service.mapper;
 
-import com.mjc.school.repository.implementation.AuthorRepositoryImpl;
-import com.mjc.school.repository.implementation.TagRepositoryImpl;
+import com.mjc.school.repository.impl.AuthorRepositoryImpl;
+import com.mjc.school.repository.impl.TagRepositoryImpl;
 import com.mjc.school.repository.model.NewsEntity;
 import com.mjc.school.service.dto.NewsDtoRequest;
 import com.mjc.school.service.dto.NewsDtoResponse;

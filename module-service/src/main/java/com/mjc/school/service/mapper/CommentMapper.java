@@ -1,6 +1,6 @@
 package com.mjc.school.service.mapper;
 
-import com.mjc.school.repository.implementation.NewsRepositoryImpl;
+import com.mjc.school.repository.impl.NewsRepositoryImpl;
 import com.mjc.school.repository.model.CommentEntity;
 import com.mjc.school.service.dto.CommentDtoRequest;
 import com.mjc.school.service.dto.CommentDtoResponse;

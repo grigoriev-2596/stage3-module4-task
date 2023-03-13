@@ -1,4 +1,4 @@
-package com.mjc.school.repository.implementation;
+package com.mjc.school.repository.impl;
 
 import com.mjc.school.repository.BaseRepository;
 import com.mjc.school.repository.model.BaseEntity;
